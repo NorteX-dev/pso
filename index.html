@@ -3,15 +3,56 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<!--		<script src="https://cdn.tailwindcss.com"></script>-->
+		<link rel="stylesheet" href="/style.css" />
 		<title>Vite App</title>
 	</head>
 	<body>
-		<div class="flex">
-			<button id="ackley-btn">Ackley</button>
-			<button id="booth-btn">Booth</button>
-			<button id="three-hump-btn">Three-hump</button>
-			<p id="currentModeText">Current mode:</p>
+		<div class="flex items-center gap-2">
+			<button class="btn btn-info" id="ackley-btn">Ackley</button>
+			<button class="btn btn-info" id="booth-btn">Booth</button>
+			<button class="btn btn-info" id="three-hump-btn">Three-hump</button>
+			<p id="currentModeText"></p>
+		</div>
+		<div class="app hidden">
+			<div id="stats-box">
+				<h1>Stats</h1>
+				<p>Inertia: <span id="inertia-stat"></span></p>
+				<p>Cognitive component: <span id="cogn-stat"></span></p>
+				<p>Social component: <span id="social-stat"></span></p>
+				<p>Optimum: <span id="optimum-stat"></span></p>
+				<p>Filter prec.: <span id="filter-stat"></span></p>
+			</div>
+			<div id="settings-box">
+				<h1>Settings</h1>
+				<div class="flex items-center gap-2">
+					<label for="inertia">Inertia:</label>
+					<input type="number" id="inertia" value="0.729844" class="form-control" />
+				</div>
+				<div class="flex items-center gap-2">
+					<label for="cogn-comp">Cognitive component:</label>
+					<input type="number" id="cogn-comp" value="1.49618" class="form-control" />
+				</div>
+				<div class="flex items-center gap-2">
+					<label for="social-comp">Social component:</label>
+					<input type="number" id="social-comp" value="1.49618" class="form-control" />
+				</div>
+				<div class="flex items-center gap-2">
+					<label for="optimum">Optimum:</label>
+					<input type="number" id="optimum" value="0.0" class="form-control" />
+				</div>
+				<div class="flex items-center gap-2">
+					<label for="particles">Partiales count:</label>
+					<input type="number" id="particles" value="100" class="form-control" />
+				</div>
+				<div class="flex items-center gap-2">
+					<label for="epochs">Epochs:</label>
+					<input type="number" id="epochs" value="1" class="form-control" />
+				</div>
+				<div class="flex items-center gap-2">
+					<label for="filter-precision">Filter precision:</label>
+					<input type="number" id="filter-precision" value="1" class="form-control" />
+				</div>
+			</div>
 		</div>
 		<script type="module" src="/main.js"></script>
 	</body>
