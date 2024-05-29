@@ -59,7 +59,7 @@ Social Component: ${social}
 Optimum Goal: ${optimum}
 Particles Amount: ${particles}
 Number of Epochs: ${epochs}
-Application Delay: ${delay}
+Application Delay: ${delay}ms
 Filter Precision: ${precision}`;
         saved = true;
     });
@@ -70,10 +70,11 @@ Filter Precision: ${precision}`;
             button.classList.add("selected-function");
         });
     });
-    function updateStats(bestSolution, bestX, bestY, epoch) {
-        document.getElementById("result-content").textContent = bestSolution.toFixed(20);
+    function updateStats(currentBest, globalBest, bestX, bestY, epoch) {
+        document.getElementById("result-content").textContent = globalBest.toFixed(20);
         const statsPre = document.getElementById("stats-content");
         statsPre.textContent = `Current epoch: ${epoch}
+Current best: ${currentBest.toFixed(20)}
 Best position X: ${bestX.toFixed(20)}
 Best position Y: ${bestY.toFixed(20)}`;
     }
@@ -100,14 +101,13 @@ Best position Y: ${bestY.toFixed(20)}`;
                 let logs = "";
                 for (let i = 0; i < swarm.bestSolutions.length; i++) {
                     yield new Promise((resolve) => setTimeout(resolve, delay));
-                    updateStats(swarm.bestSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
+                    updateStats(swarm.bestSolutions[i], swarm.oldSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
                     // document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
-                    // document.getElementById("pso_x_value_text").textContent = swarm.bestPositions[i].x;
-                    // document.getElementById("pso_y_value_text").textContent = swarm.bestPositions[i].y;
                     logs = swarm.logs[i] + "\n" + logs;
                     updateLogs(logs);
-                    // document.getElementById("pso_current_epoch_number_text").textContent = i.toString();
-                    // if (i === this.bestPositions.length - 1) document.getElementById("pso_global_best_solution_text").textContent = swarm.bestSolutions[i];
+                    if (i === swarm.bestPositions.length - 1) {
+                        updateStats(swarm.bestSolutions[i], swarm.bestSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
+                    }
                 }
                 running = false;
                 statusText.textContent = "Idle";
