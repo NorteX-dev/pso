@@ -1,18 +1,7 @@
 import { Vector, Particle } from "./classes.js";
 
 export class SwarmAlgorithm {
-	constructor(
-		functionType,
-		particles,
-		epochs,
-		inertia,
-		cognitive,
-		social,
-		beginRange,
-		endRange,
-		optimum,
-		filterPrecision,
-	) {
+	constructor(functionType, particles, epochs, inertia, cognitive, social, beginRange, endRange, optimum, filterPrecision) {
 		if (beginRange >= endRange) {
 			throw new Error("Begin range must be less than end range.");
 		}
@@ -22,11 +11,7 @@ export class SwarmAlgorithm {
 		this.cognitiveComponent = cognitive;
 		this.socialComponent = social;
 		this.functionType = functionType;
-		this.bestPosition = new Vector(
-			Number.POSITIVE_INFINITY,
-			Number.POSITIVE_INFINITY,
-			Number.POSITIVE_INFINITY,
-		);
+		this.bestPosition = new Vector(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
 		this.bestSolution = Number.POSITIVE_INFINITY;
 		this.beginRange = beginRange;
 		this.endRange = endRange;
@@ -37,13 +22,16 @@ export class SwarmAlgorithm {
 		this.oldSolutions = [];
 		this.algorithmTextLogs = [];
 		this.swarmParticles = [];
+
+		console.log("Created SwarmAlgorithm object:");
+		console.log(this);
 	}
 
 	run() {
+		console.log("Running");
 		let particles = this.initialize();
 		let oldSolution = this.bestSolution;
-		let finalSolution = this.setDecimalFormat();
-		this.exportViewPattern(finalSolution);
+		// let finalSolution = 0;
 
 		for (let i = 0; i < this.epochs; i++) {
 			this.swarmParticles.push(particles);
@@ -66,7 +54,7 @@ export class SwarmAlgorithm {
 					break;
 				}
 			} else {
-				if (finalSolution(this.bestSolution) === finalSolution(this.optimum)) {
+				if (this.bestSolution === this.optimum) {
 					break;
 				}
 			}
@@ -86,45 +74,15 @@ export class SwarmAlgorithm {
 	initialize() {
 		let particles = [];
 		for (let i = 0; i < this.numOfParticles; i++) {
-			let particle = new Particle(
-				this.functionType,
-				this.beginRange,
-				this.endRange,
-				this.optimum,
-			);
+			let particle = new Particle(this.functionType, this.beginRange, this.endRange, this.optimum);
 			particles.push(particle);
 			this.updateGlobalBest(particle);
 		}
 		return particles;
 	}
 
-	exportViewPattern(viewPattern) {
-		// PSOSceneController PSOSC = new PSOSceneController();
-		// PSOSC.setViewPattern(viewPattern);
-		// This part of the code is commented out because it seems to be related to a UI component which is not present in the provided context.
-	}
-
-	setDecimalFormat() {
-		let pattern = "#0.";
-		if (this.filterPrecision === 0) {
-			let stringDouble = Number.MAX_VALUE.toString();
-
-			for (let i = 0; i < stringDouble.length; i++) {
-				pattern += "0";
-			}
-		} else {
-			for (let i = 0; i < this.filterPrecision; i++) {
-				pattern += "0";
-			}
-		}
-		return (num) => num.toFixed(pattern.length - 3);
-	}
-
 	updateGlobalBest(particle) {
-		if (
-			particle.getBestSolution() < this.bestSolution &&
-			particle.getBestSolution() >= this.optimum
-		) {
+		if (particle.getBestSolution() < this.bestSolution && particle.getBestSolution() >= this.optimum) {
 			this.bestPosition = particle.getBestPosition();
 			this.bestSolution = particle.getBestSolution();
 		}
@@ -153,22 +111,6 @@ export class SwarmAlgorithm {
 		newVelocity.addCoordinates(globalBestPosition);
 
 		particle.setVelocity(newVelocity);
-	}
-
-	getBestPositions() {
-		return this.bestPositions;
-	}
-
-	getBestSolutions() {
-		return this.bestSolutions;
-	}
-
-	getOldSolutions() {
-		return this.oldSolutions;
-	}
-
-	getAlgorithmTextLogs() {
-		return this.algorithmTextLogs;
 	}
 
 	static getDefaultInertia() {
