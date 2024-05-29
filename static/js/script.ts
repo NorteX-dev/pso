@@ -120,14 +120,12 @@ Best position Y: ${bestY.toFixed(20)}`;
 			);
 			swarm.run();
 
-			// w javie tu new Thread
 			let logs = "";
 
 			for (let i = 0; i < swarm.bestSolutions.length; i++) {
 				await new Promise((resolve) => setTimeout(resolve, delay));
 
 				updateStats(swarm.bestSolutions[i], swarm.oldSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
-				// document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
 				logs = swarm.logs[i] + "\n" + logs;
 				updateLogs(logs);
 
@@ -144,6 +142,6 @@ Best position Y: ${bestY.toFixed(20)}`;
 				await calculate();
 			}
 		}
-		calculate();
+		await calculate();
 	});
 });
