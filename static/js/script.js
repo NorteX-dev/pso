@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     document.getElementById("save-info").addEventListener("click", () => {
         if (!selectedFunction) {
+            alert("Please select a function.");
             throw new Error("Please select a function.");
         }
         inertia = parseFloat(document.getElementById("inertia").value);
@@ -73,9 +74,11 @@ Filter Precision: ${precision}`;
         function calculate() {
             return __awaiter(this, void 0, void 0, function* () {
                 if (!saved) {
+                    alert("Please save the information first.");
                     throw new Error("Please save the information first.");
                 }
                 if (running) {
+                    alert("The algorithm is already running.");
                     throw new Error("The algorithm is already running.");
                 }
                 running = true;

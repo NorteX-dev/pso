@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	document.getElementById("save-info")!.addEventListener("click", () => {
 		if (!selectedFunction) {
+			alert("Please select a function.");
 			throw new Error("Please select a function.");
 		}
 
@@ -77,10 +78,12 @@ Filter Precision: ${precision}`;
 	document.getElementById("calculate")!.addEventListener("click", async () => {
 		async function calculate() {
 			if (!saved) {
+				alert("Please save the information first.");
 				throw new Error("Please save the information first.");
 			}
 
 			if (running) {
+				alert("The algorithm is already running.");
 				throw new Error("The algorithm is already running.");
 			}
 
