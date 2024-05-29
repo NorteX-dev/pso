@@ -64,10 +64,10 @@ export class SwarmAlgorithm {
 			this.bestSolutions.push(this.bestSolution);
 
 			if (this.bestSolution < oldSolution) {
-				this.logs.push("Global best (Epoch " + i + 1 + "): " + this.bestSolution /*.toFixed(20)*/);
+				this.logs.push("Global best (Epoch " + (i + 1) + "): " + this.bestSolution /*.toFixed(20)*/);
 				oldSolution = this.bestSolution;
 			} else {
-				this.logs.push("Global best (Epoch " + i + 1 + "): " + this.bestSolution /*.toFixed(20)*/);
+				this.logs.push("Global best (Epoch " + (i + 1) + "): " + this.bestSolution /*.toFixed(20)*/);
 			}
 
 			if (this.bestSolution === this.optimum) {
@@ -127,17 +127,5 @@ export class SwarmAlgorithm {
 		newVelocity.addCoordinates(globalBestPosition);
 
 		particle.setVelocity(newVelocity);
-	}
-
-	static getDefaultInertia() {
-		return 0.729844;
-	}
-
-	static getDefaultCognitive() {
-		return 1.49618;
-	}
-
-	static getDefaultSocial() {
-		return 1.49618;
 	}
 }
