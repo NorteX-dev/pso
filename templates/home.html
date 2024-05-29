@@ -12,24 +12,9 @@
 			<div class="w-full md:w-2/3 pr-4">
 				<div class="text-center py-10">
 					<div class="flex justify-center mb-3">
-						<button
-							class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded"
-							id="ackley"
-						>
-							Ackley
-						</button>
-						<button
-							class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded"
-							id="booth"
-						>
-							Booth
-						</button>
-						<button
-							class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded"
-							id="three-hump"
-						>
-							Three-hump
-						</button>
+						<button class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded" id="ackley">Ackley's</button>
+						<button class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded" id="booth">Booth's</button>
+						<button class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded" id="three-hump">Three-hump</button>
 					</div>
 					<form id="pso-form" class="text-left">
 						<div class="mb-4">
@@ -41,12 +26,11 @@
 								step="0.01"
 								required
 								class="w-full border border-gray-300 rounded py-2 px-3"
+								value="0.729844"
 							/>
 						</div>
 						<div class="mb-4">
-							<label for="cognitive" class="block text-gray-700"
-								>Cognitive Component:</label
-							>
+							<label for="cognitive" class="block text-gray-700">Cognitive Component:</label>
 							<input
 								type="number"
 								id="cognitive"
@@ -54,12 +38,11 @@
 								step="0.01"
 								required
 								class="w-full border border-gray-300 rounded py-2 px-3"
+								value="1.496180"
 							/>
 						</div>
 						<div class="mb-4">
-							<label for="social" class="block text-gray-700"
-								>Social Component:</label
-							>
+							<label for="social" class="block text-gray-700">Social Component:</label>
 							<input
 								type="number"
 								id="social"
@@ -67,6 +50,7 @@
 								step="0.01"
 								required
 								class="w-full border border-gray-300 rounded py-2 px-3"
+								value="1.496180"
 							/>
 						</div>
 						<div class="mb-4">
@@ -78,48 +62,44 @@
 								step="0.01"
 								required
 								class="w-full border border-gray-300 rounded py-2 px-3"
+								value="0"
 							/>
 						</div>
 						<div class="mb-4">
-							<label for="particles" class="block text-gray-700"
-								>Particles Amount:</label
-							>
+							<label for="particles" class="block text-gray-700">Particles Amount:</label>
 							<input
 								type="number"
 								id="particles"
 								name="particles"
 								required
 								class="w-full border border-gray-300 rounded py-2 px-3"
+								value="100"
 							/>
 						</div>
 						<div class="mb-4">
-							<label for="epochs" class="block text-gray-700"
-								>Number of Epochs:</label
-							>
+							<label for="epochs" class="block text-gray-700">Number of Epochs:</label>
 							<input
 								type="number"
 								id="epochs"
 								name="epochs"
 								required
 								class="w-full border border-gray-300 rounded py-2 px-3"
+								value="100"
 							/>
 						</div>
 						<div class="mb-4">
-							<label for="delay" class="block text-gray-700"
-								>Application Delay (ms):</label
-							>
+							<label for="delay" class="block text-gray-700">Application Delay (ms):</label>
 							<input
 								type="number"
 								id="delay"
 								name="delay"
 								required
 								class="w-full border border-gray-300 rounded py-2 px-3"
+								value="15"
 							/>
 						</div>
 						<div class="mb-4">
-							<label for="precision" class="block text-gray-700"
-								>Filter Precision:</label
-							>
+							<label for="precision" class="block text-gray-700">Filter Precision:</label>
 							<input
 								type="number"
 								id="precision"
@@ -127,32 +107,20 @@
 								step="0.01"
 								required
 								class="w-full border border-gray-300 rounded py-2 px-3"
+								value="1"
 							/>
 						</div>
 						<div class="flex justify-center">
-							<button
-								type="button"
-								id="save-info"
-								class="mx-2 bg-green-500 text-white py-2 px-4 mt-2 mb-2 rounded"
-							>
+							<button type="button" id="save-info" class="mx-2 bg-green-500 text-white py-2 px-4 mt-2 mb-2 rounded">
 								Save Information
 							</button>
-							<button
-								type="button"
-								id="calculate"
-								class="mx-2 bg-red-500 text-white py-2 px-4 mt-2 mb-2 rounded"
-							>
-								Calculate
-							</button>
+							<button type="button" id="calculate" class="mx-2 bg-red-500 text-white py-2 px-4 mt-2 mb-2 rounded">Calculate</button>
 						</div>
 					</form>
 				</div>
 			</div>
 			<div class="w-full md:w-1/3 pl-4 pt-10">
-				<div
-					id="saved-info"
-					class="mt-4 p-4 border border-gray-300 rounded bg-white shadow"
-				>
+				<div id="saved-info" class="mt-4 p-4 border border-gray-300 rounded bg-white shadow">
 					<h3 class="text-lg font-semibold">Saved Information:</h3>
 					<pre id="saved-info-content" class="bg-gray-100 p-2 rounded"></pre>
 				</div>
