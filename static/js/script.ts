@@ -2,6 +2,8 @@ import { SwarmAlgorithm } from "./swarm.js";
 
 export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 
+let MAGIC_NO_0_SWITCH = true;
+
 document.addEventListener("DOMContentLoaded", () => {
 	const statusText = document.getElementById("status-text")!;
 	statusText.textContent = "Idle";
@@ -73,55 +75,59 @@ Filter Precision: ${precision}`;
 	});
 
 	document.getElementById("calculate")!.addEventListener("click", async () => {
-		if (!saved) {
-			throw new Error("Please save the information first.");
+		async function calculate() {
+			if (!saved) {
+				throw new Error("Please save the information first.");
+			}
+
+			if (running) {
+				throw new Error("The algorithm is already running.");
+			}
+
+			running = true;
+			statusText.textContent = "Running...";
+			statusText.style.color = "green";
+
+			const swarm = new SwarmAlgorithm(
+				selectedFunction /*functionType*/,
+				particles /*particles*/,
+				epochs /*epochs*/,
+				inertia /*inertia*/,
+				cognitive /*cognitive*/,
+				social /*social*/,
+				0 /*beginRange*/,
+				10 /*endRange*/,
+				optimum /*optimum*/,
+				precision /*filterPrecision*/,
+			);
+			swarm.run();
+
+			// w javie tu new Thread
+			let logs = "";
+
+			for (let i = 0; i < swarm.bestSolutions.length; i++) {
+				await new Promise((resolve) => setTimeout(resolve, delay));
+
+				document.getElementById("result-content")!.textContent = swarm.bestSolutions[i].toFixed(20);
+				// document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
+				// document.getElementById("pso_x_value_text").textContent = swarm.bestPositions[i].x;
+				// document.getElementById("pso_y_value_text").textContent = swarm.bestPositions[i].y;
+				logs = swarm.logs[i] + "\n" + logs;
+				document.getElementById("logs-content")!.textContent = logs;
+				// document.getElementById("pso_current_epoch_number_text").textContent = i.toString();
+
+				// if (i === this.bestPositions.length - 1) document.getElementById("pso_global_best_solution_text").textContent = swarm.bestSolutions[i];
+			}
+
+			running = false;
+			statusText.textContent = "Idle";
+			statusText.style.color = "orange";
+			console.log(swarm);
+
+			if (MAGIC_NO_0_SWITCH && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === 0) {
+				await calculate();
+			}
 		}
-
-		if (running) {
-			throw new Error("The algorithm is already running.");
-		}
-
-		running = true;
-		statusText.textContent = "Running...";
-		statusText.style.color = "green";
-
-		const swarm = new SwarmAlgorithm(
-			selectedFunction /*functionType*/,
-			particles /*particles*/,
-			epochs /*epochs*/,
-			inertia /*inertia*/,
-			cognitive /*cognitive*/,
-			social /*social*/,
-			0 /*beginRange*/,
-			10 /*endRange*/,
-			optimum /*optimum*/,
-			precision /*filterPrecision*/,
-		);
-		swarm.run();
-
-		// w javie tu new Thread
-		let logs = "";
-
-		for (let i = 0; i < swarm.bestSolutions.length; i++) {
-			await new Promise((resolve) => setTimeout(resolve, delay));
-
-			document.getElementById("result-content")!.textContent = swarm.bestSolutions[i].toFixed(20);
-			// document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
-			// document.getElementById("pso_x_value_text").textContent = swarm.bestPositions[i].x;
-			// document.getElementById("pso_y_value_text").textContent = swarm.bestPositions[i].y;
-			logs = swarm.logs[i] + "\n" + logs;
-			document.getElementById("logs-content")!.textContent = logs;
-			// document.getElementById("pso_current_epoch_number_text").textContent = i.toString();
-
-			// if (i === this.bestPositions.length - 1) document.getElementById("pso_global_best_solution_text").textContent = swarm.bestSolutions[i];
-		}
-
-		running = false;
-		statusText.textContent = "Idle";
-		statusText.style.color = "orange";
-
-		console.log(swarm);
-
-		// document.getElementById("pso_current_best_solution_text").textContent = "";
+		calculate();
 	});
 });
