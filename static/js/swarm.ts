@@ -1,7 +1,7 @@
 import { Vector, Particle } from "./classes.js";
 import { FunctionType } from "./script.js";
 
-export class SwarmAlgorithm {
+export class Swarm {
 	public numOfParticles: number;
 	public epochs: number;
 	public inertia: number;

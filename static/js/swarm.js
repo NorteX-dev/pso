@@ -1,5 +1,5 @@
 import { Vector, Particle } from "./classes.js";
-export class SwarmAlgorithm {
+export class Swarm {
     constructor(functionType, particles, epochs, inertia, cognitive, social, beginRange, endRange, optimum, filterPrecision) {
         // ###
         this.bestPositions = [];

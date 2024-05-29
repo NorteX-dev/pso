@@ -1,4 +1,4 @@
-import { SwarmAlgorithm } from "./swarm.js";
+import { Swarm } from "./swarm.js";
 
 export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 
@@ -75,6 +75,20 @@ Filter Precision: ${precision}`;
 		});
 	});
 
+	function updateStats(bestSolution: number, bestX: number, bestY: number, epoch: number) {
+		document.getElementById("result-content")!.textContent = bestSolution.toFixed(20);
+
+		const statsPre: HTMLPreElement = document.getElementById("stats-content") as HTMLPreElement;
+
+		statsPre.textContent = `Current epoch: ${epoch}
+Best position X: ${bestX.toFixed(20)}
+Best position Y: ${bestY.toFixed(20)}`;
+	}
+
+	function updateLogs(logs: string) {
+		document.getElementById("logs-content")!.textContent = logs;
+	}
+
 	document.getElementById("calculate")!.addEventListener("click", async () => {
 		async function calculate() {
 			if (!saved) {
@@ -91,7 +105,7 @@ Filter Precision: ${precision}`;
 			statusText.textContent = "Running...";
 			statusText.style.color = "green";
 
-			const swarm = new SwarmAlgorithm(
+			const swarm = new Swarm(
 				selectedFunction /*functionType*/,
 				particles /*particles*/,
 				epochs /*epochs*/,
@@ -111,12 +125,12 @@ Filter Precision: ${precision}`;
 			for (let i = 0; i < swarm.bestSolutions.length; i++) {
 				await new Promise((resolve) => setTimeout(resolve, delay));
 
-				document.getElementById("result-content")!.textContent = swarm.bestSolutions[i].toFixed(20);
+				updateStats(swarm.bestSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
 				// document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
 				// document.getElementById("pso_x_value_text").textContent = swarm.bestPositions[i].x;
 				// document.getElementById("pso_y_value_text").textContent = swarm.bestPositions[i].y;
 				logs = swarm.logs[i] + "\n" + logs;
-				document.getElementById("logs-content")!.textContent = logs;
+				updateLogs(logs);
 				// document.getElementById("pso_current_epoch_number_text").textContent = i.toString();
 
 				// if (i === this.bestPositions.length - 1) document.getElementById("pso_global_best_solution_text").textContent = swarm.bestSolutions[i];
@@ -125,7 +139,6 @@ Filter Precision: ${precision}`;
 			running = false;
 			statusText.textContent = "Idle";
 			statusText.style.color = "orange";
-			console.log(swarm);
 
 			if (MAGIC_NO_0_SWITCH && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === 0) {
 				await calculate();

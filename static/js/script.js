@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { SwarmAlgorithm } from "./swarm.js";
+import { Swarm } from "./swarm.js";
 let MAGIC_NO_0_SWITCH = true;
 document.addEventListener("DOMContentLoaded", () => {
     const statusText = document.getElementById("status-text");
@@ -70,6 +70,16 @@ Filter Precision: ${precision}`;
             button.classList.add("selected-function");
         });
     });
+    function updateStats(bestSolution, bestX, bestY, epoch) {
+        document.getElementById("result-content").textContent = bestSolution.toFixed(20);
+        const statsPre = document.getElementById("stats-content");
+        statsPre.textContent = `Current epoch: ${epoch}
+Best position X: ${bestX.toFixed(20)}
+Best position Y: ${bestY.toFixed(20)}`;
+    }
+    function updateLogs(logs) {
+        document.getElementById("logs-content").textContent = logs;
+    }
     document.getElementById("calculate").addEventListener("click", () => __awaiter(void 0, void 0, void 0, function* () {
         function calculate() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -84,25 +94,24 @@ Filter Precision: ${precision}`;
                 running = true;
                 statusText.textContent = "Running...";
                 statusText.style.color = "green";
-                const swarm = new SwarmAlgorithm(selectedFunction /*functionType*/, particles /*particles*/, epochs /*epochs*/, inertia /*inertia*/, cognitive /*cognitive*/, social /*social*/, 0 /*beginRange*/, 10 /*endRange*/, optimum /*optimum*/, precision /*filterPrecision*/);
+                const swarm = new Swarm(selectedFunction /*functionType*/, particles /*particles*/, epochs /*epochs*/, inertia /*inertia*/, cognitive /*cognitive*/, social /*social*/, 0 /*beginRange*/, 10 /*endRange*/, optimum /*optimum*/, precision /*filterPrecision*/);
                 swarm.run();
                 // w javie tu new Thread
                 let logs = "";
                 for (let i = 0; i < swarm.bestSolutions.length; i++) {
                     yield new Promise((resolve) => setTimeout(resolve, delay));
-                    document.getElementById("result-content").textContent = swarm.bestSolutions[i].toFixed(20);
+                    updateStats(swarm.bestSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
                     // document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
                     // document.getElementById("pso_x_value_text").textContent = swarm.bestPositions[i].x;
                     // document.getElementById("pso_y_value_text").textContent = swarm.bestPositions[i].y;
                     logs = swarm.logs[i] + "\n" + logs;
-                    document.getElementById("logs-content").textContent = logs;
+                    updateLogs(logs);
                     // document.getElementById("pso_current_epoch_number_text").textContent = i.toString();
                     // if (i === this.bestPositions.length - 1) document.getElementById("pso_global_best_solution_text").textContent = swarm.bestSolutions[i];
                 }
                 running = false;
                 statusText.textContent = "Idle";
                 statusText.style.color = "orange";
-                console.log(swarm);
                 if (MAGIC_NO_0_SWITCH && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === 0) {
                     yield calculate();
                 }
