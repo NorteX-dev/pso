@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    <title>Particle Swarm Optimization</title>
+</head>
+<body class="font-sans leading-normal tracking-normal" id="background">
+{% include 'partials/_header.html' %}
+<div class="container mx-auto px-4 mt-8 min-h-screen flex">
+    <div class="w-full md:w-2/3 pr-4">
+        <div class="text-center py-10">
+            <div class="flex justify-center mb-3">
+                <button class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded" id="ackley">Ackley</button>
+                <button class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded" id="booth">Booth</button>
+                <button class="function-button mx-2 bg-blue-400 text-white py-2 px-4 mt-2 rounded" id="three-hump">Three-hump</button>
+            </div>
+            <form id="pso-form" class="text-left">
+                <div class="mb-4">
+                    <label for="inertia" class="block text-gray-700">Inertia:</label>
+                    <input type="number" id="inertia" name="inertia" step="0.01" required class="w-full border border-gray-300 rounded py-2 px-3">
+                </div>
+                <div class="mb-4">
+                    <label for="cognitive" class="block text-gray-700">Cognitive Component:</label>
+                    <input type="number" id="cognitive" name="cognitive" step="0.01" required class="w-full border border-gray-300 rounded py-2 px-3">
+                </div>
+                <div class="mb-4">
+                    <label for="social" class="block text-gray-700">Social Component:</label>
+                    <input type="number" id="social" name="social" step="0.01" required class="w-full border border-gray-300 rounded py-2 px-3">
+                </div>
+                <div class="mb-4">
+                    <label for="optimum" class="block text-gray-700">Optimum:</label>
+                    <input type="number" id="optimum" name="optimum" step="0.01" required class="w-full border border-gray-300 rounded py-2 px-3">
+                </div>
+                <div class="mb-4">
+                    <label for="particles" class="block text-gray-700">Particles Amount:</label>
+                    <input type="number" id="particles" name="particles" required class="w-full border border-gray-300 rounded py-2 px-3">
+                </div>
+                <div class="mb-4">
+                    <label for="epochs" class="block text-gray-700">Number of Epochs:</label>
+                    <input type="number" id="epochs" name="epochs" required class="w-full border border-gray-300 rounded py-2 px-3">
+                </div>
+                <div class="mb-4">
+                    <label for="delay" class="block text-gray-700">Application Delay (ms):</label>
+                    <input type="number" id="delay" name="delay" required class="w-full border border-gray-300 rounded py-2 px-3">
+                </div>
+                <div class="mb-4">
+                    <label for="precision" class="block text-gray-700">Filter Precision:</label>
+                    <input type="number" id="precision" name="precision" step="0.01" required class="w-full border border-gray-300 rounded py-2 px-3">
+                </div>
+                <div class="flex justify-center">
+                    <button type="button" id="save-info" class="mx-2 bg-green-500 text-white py-2 px-4 mt-2 mb-2 rounded">Save Information</button>
+                    <button type="button" id="calculate" class="mx-2 bg-red-500 text-white py-2 px-4 mt-2 mb-2 rounded">Calculate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="w-full md:w-1/3 pl-4 pt-10">
+        <div id="saved-info" class="mt-4 p-4 border border-gray-300 rounded bg-white shadow">
+            <h3 class="text-lg font-semibold">Saved Information:</h3>
+            <pre id="saved-info-content" class="bg-gray-100 p-2 rounded"></pre>
+        </div>
+        <div id="result" class="mt-4 p-4 border border-gray-300 rounded bg-white shadow">
+            <h3 class="text-lg font-semibold">Result:</h3>
+            <pre id="result-content" class="bg-gray-100 p-2 rounded"></pre>
+        </div>
+    </div>
+</div>
+<footer class="bg-gray-800 text-white text-center py-4 mt-5">
+    <p>&copy; 2024 Particle Swarm Optimization App</p>
+</footer>
+<script src="/static/js/script.js" defer></script>
+</body>
+</html>
