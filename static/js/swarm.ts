@@ -56,7 +56,6 @@ export class SwarmAlgorithm {
 	run() {
 		let particles = this.initialize();
 		let oldSolution = this.bestSolution;
-		// let finalSolution = 0;
 
 		for (let i = 0; i < this.epochs; i++) {
 			this.oldSolutions.push(oldSolution);
@@ -64,10 +63,10 @@ export class SwarmAlgorithm {
 			this.bestSolutions.push(this.bestSolution);
 
 			if (this.bestSolution < oldSolution) {
-				this.logs.push("Global best (Epoch " + (i + 1) + "): " + this.bestSolution /*.toFixed(20)*/);
+				this.logs.push("Global best (Epoch " + (i + 1) + "): " + this.bestSolution.toFixed(20));
 				oldSolution = this.bestSolution;
 			} else {
-				this.logs.push("Global best (Epoch " + (i + 1) + "): " + this.bestSolution /*.toFixed(20)*/);
+				this.logs.push("Global best (Epoch " + (i + 1) + "): " + this.bestSolution.toFixed(20));
 			}
 
 			if (this.bestSolution === this.optimum) {

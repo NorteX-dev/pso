@@ -105,7 +105,7 @@ Filter Precision: ${precision}`;
 		for (let i = 0; i < swarm.bestSolutions.length; i++) {
 			await new Promise((resolve) => setTimeout(resolve, delay));
 
-			document.getElementById("result-content")!.textContent = swarm.bestSolutions[i].toFixed(10);
+			document.getElementById("result-content")!.textContent = swarm.bestSolutions[i].toFixed(20);
 			// document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
 			// document.getElementById("pso_x_value_text").textContent = swarm.bestPositions[i].x;
 			// document.getElementById("pso_y_value_text").textContent = swarm.bestPositions[i].y;
