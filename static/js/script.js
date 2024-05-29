@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { Swarm } from "./swarm.js";
-let MAGIC_NO_0_SWITCH = true;
+let MAGIC_SWITCH = true;
 document.addEventListener("DOMContentLoaded", () => {
     const statusText = document.getElementById("status-text");
     statusText.textContent = "Idle";
@@ -97,12 +97,10 @@ Best position Y: ${bestY.toFixed(20)}`;
                 statusText.style.color = "green";
                 const swarm = new Swarm(selectedFunction /*functionType*/, particles /*particles*/, epochs /*epochs*/, inertia /*inertia*/, cognitive /*cognitive*/, social /*social*/, 0 /*beginRange*/, 10 /*endRange*/, optimum /*optimum*/, precision /*filterPrecision*/);
                 swarm.run();
-                // w javie tu new Thread
                 let logs = "";
                 for (let i = 0; i < swarm.bestSolutions.length; i++) {
                     yield new Promise((resolve) => setTimeout(resolve, delay));
                     updateStats(swarm.bestSolutions[i], swarm.oldSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
-                    // document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
                     logs = swarm.logs[i] + "\n" + logs;
                     updateLogs(logs);
                     if (i === swarm.bestPositions.length - 1) {
@@ -112,11 +110,11 @@ Best position Y: ${bestY.toFixed(20)}`;
                 running = false;
                 statusText.textContent = "Idle";
                 statusText.style.color = "orange";
-                if (MAGIC_NO_0_SWITCH && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === 0) {
+                if (MAGIC_SWITCH && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === swarm.optimum) {
                     yield calculate();
                 }
             });
         }
-        calculate();
+        yield calculate();
     }));
 });

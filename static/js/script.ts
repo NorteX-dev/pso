@@ -2,7 +2,7 @@ import { Swarm } from "./swarm.js";
 
 export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 
-let MAGIC_NO_0_SWITCH = true;
+let MAGIC_SWITCH = true;
 
 document.addEventListener("DOMContentLoaded", () => {
 	const statusText = document.getElementById("status-text")!;
@@ -138,7 +138,7 @@ Best position Y: ${bestY.toFixed(20)}`;
 			statusText.textContent = "Idle";
 			statusText.style.color = "orange";
 
-			if (MAGIC_NO_0_SWITCH && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === 0) {
+			if (MAGIC_SWITCH && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === swarm.optimum) {
 				await calculate();
 			}
 		}
