@@ -41,8 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	document.getElementById("save-info")!.addEventListener("click", () => {
 		if (!selectedFunction) {
-			alert("Please select a function.");
+			showAlert("Please select a function.", "error");
 			throw new Error("Please select a function.");
+		}
+
+		if(running) {
+			showAlert("The algorithm is running. Please wait.", "error");
+			throw new Error("The algorithm is running. Please wait.");
 		}
 
 		inertia = parseFloat((<HTMLInputElement>document.getElementById("inertia"))!.value);
@@ -93,13 +98,13 @@ Best position Y: ${bestY.toFixed(20)}`;
 	document.getElementById("calculate")!.addEventListener("click", async () => {
 		async function calculate() {
 			if (!saved) {
-				alert("Please save the information first.");
+				showAlert("Please save the information first.", "error");
 				throw new Error("Please save the information first.");
 			}
 
 			if (running) {
-				alert("The algorithm is already running.");
-				throw new Error("The algorithm is already running.");
+				showAlert("The algorithm is running. Please wait.", "error");
+				throw new Error("The algorithm is running. Please wait.");
 			}
 
 			running = true;
@@ -144,4 +149,25 @@ Best position Y: ${bestY.toFixed(20)}`;
 		}
 		await calculate();
 	});
+
+	function showAlert(message: string | null, type: string) {
+		// Remove existing alert if present
+		const existingAlert = document.querySelector('.alert-container');
+		if (existingAlert) existingAlert.remove();
+
+		const alertContainer = document.createElement('div');
+		alertContainer.className = 'alert-container';
+
+		const alertBox = document.createElement('div');
+		alertBox.className = `alert alert-${type} p-4 rounded shadow-lg max-w-md`;
+		alertBox.textContent = message;
+
+		alertContainer.appendChild(alertBox);
+		document.body.appendChild(alertContainer);
+
+		setTimeout(() => {
+			alertBox.style.opacity = '0';
+			setTimeout(() => alertContainer.remove(), 500);
+		}, 3000);
+	}
 });

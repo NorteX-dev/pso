@@ -41,8 +41,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     document.getElementById("save-info").addEventListener("click", () => {
         if (!selectedFunction) {
-            alert("Please select a function.");
+            showAlert("Please select a function.", "error");
             throw new Error("Please select a function.");
+        }
+        if (running) {
+            showAlert("The algorithm is running. Please wait.", "error");
+            throw new Error("The algorithm is running. Please wait.");
         }
         inertia = parseFloat(document.getElementById("inertia").value);
         cognitive = parseFloat(document.getElementById("cognitive").value);
@@ -85,12 +89,12 @@ Best position Y: ${bestY.toFixed(20)}`;
         function calculate() {
             return __awaiter(this, void 0, void 0, function* () {
                 if (!saved) {
-                    alert("Please save the information first.");
+                    showAlert("Please save the information first.", "error");
                     throw new Error("Please save the information first.");
                 }
                 if (running) {
-                    alert("The algorithm is already running.");
-                    throw new Error("The algorithm is already running.");
+                    showAlert("The algorithm is running. Please wait.", "error");
+                    throw new Error("The algorithm is running. Please wait.");
                 }
                 running = true;
                 statusText.textContent = "Running...";
@@ -117,4 +121,21 @@ Best position Y: ${bestY.toFixed(20)}`;
         }
         yield calculate();
     }));
+    function showAlert(message, type) {
+        // Remove existing alert if present
+        const existingAlert = document.querySelector('.alert-container');
+        if (existingAlert)
+            existingAlert.remove();
+        const alertContainer = document.createElement('div');
+        alertContainer.className = 'alert-container';
+        const alertBox = document.createElement('div');
+        alertBox.className = `alert alert-${type} p-4 rounded shadow-lg max-w-md`;
+        alertBox.textContent = message;
+        alertContainer.appendChild(alertBox);
+        document.body.appendChild(alertContainer);
+        setTimeout(() => {
+            alertBox.style.opacity = '0';
+            setTimeout(() => alertContainer.remove(), 500);
+        }, 3000);
+    }
 });
