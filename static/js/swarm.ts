@@ -20,7 +20,7 @@ export class SwarmAlgorithm {
 	public bestPositions: Vector[] = [];
 	public bestSolutions: number[] = [];
 	public oldSolutions: number[] = [];
-	public algorithmTextLogs: string[] = [];
+	public logs: string[] = [];
 
 	constructor(
 		functionType: FunctionType,
@@ -63,24 +63,16 @@ export class SwarmAlgorithm {
 			this.bestPositions.push(this.bestPosition);
 			this.bestSolutions.push(this.bestSolution);
 
-			let s;
 			if (this.bestSolution < oldSolution) {
-				s = "Global best solution (Epoch " + i + "):\t" + this.bestSolution.toFixed(20);
-				this.algorithmTextLogs.push(s);
+				this.logs.push("Global best (Epoch " + i + 1 + "): " + this.bestSolution /*.toFixed(20)*/);
 				oldSolution = this.bestSolution;
 			} else {
-				s = "Global best solution (Epoch " + i + "):\t" + this.bestSolution.toFixed(20);
-				this.algorithmTextLogs.push(s);
+				this.logs.push("Global best (Epoch " + i + 1 + "): " + this.bestSolution /*.toFixed(20)*/);
 			}
 
-			if (this.filterPrecision === 0) {
-				if (this.bestSolution === this.optimum) {
-					break;
-				}
-			} else {
-				if (this.bestSolution === this.optimum) {
-					break;
-				}
+			if (this.bestSolution === this.optimum) {
+				console.log("Reached optimum, finishing.");
+				break;
 			}
 
 			for (let p of particles) {

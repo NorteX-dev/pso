@@ -3,6 +3,10 @@ import { SwarmAlgorithm } from "./swarm.js";
 export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 
 document.addEventListener("DOMContentLoaded", () => {
+	const statusText = document.getElementById("status-text")!;
+	statusText.textContent = "Idle";
+	statusText.style.color = "orange";
+
 	const toggleButton = document.querySelector('[data-collapse-toggle="mobile-menu"]')!;
 	const menu: HTMLDivElement = document.querySelector("#mobile-menu")!;
 
@@ -11,8 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		menu.style.display = menu.style.display === "none" ? "block" : "none";
 	});
 
+	let running: boolean = false;
 	let saved: boolean = false;
-	let selectedFunction: FunctionType | undefined;
+	let selectedFunction: FunctionType;
 	let inertia: number;
 	let cognitive: number;
 	let social: number;
@@ -33,6 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	document.getElementById("save-info")!.addEventListener("click", () => {
+		if (!selectedFunction) {
+			throw new Error("Please select a function.");
+		}
+
 		inertia = parseFloat((<HTMLInputElement>document.getElementById("inertia"))!.value);
 		cognitive = parseFloat((<HTMLInputElement>document.getElementById("cognitive"))!.value);
 		social = parseFloat((<HTMLInputElement>document.getElementById("social"))!.value);
@@ -64,12 +73,18 @@ Filter Precision: ${precision}`;
 	});
 
 	document.getElementById("calculate")!.addEventListener("click", async () => {
-		if (!selectedFunction) {
-			throw new Error("Please select a function.");
-		}
 		if (!saved) {
 			throw new Error("Please save the information first.");
 		}
+
+		if (running) {
+			throw new Error("The algorithm is already running.");
+		}
+
+		running = true;
+		statusText.textContent = "Running...";
+		statusText.style.color = "green";
+
 		const swarm = new SwarmAlgorithm(
 			selectedFunction /*functionType*/,
 			particles /*particles*/,
@@ -85,7 +100,7 @@ Filter Precision: ${precision}`;
 		swarm.run();
 
 		// w javie tu new Thread
-		let s = "";
+		let logs = "";
 
 		for (let i = 0; i < swarm.bestSolutions.length; i++) {
 			await new Promise((resolve) => setTimeout(resolve, delay));
@@ -94,14 +109,18 @@ Filter Precision: ${precision}`;
 			// document.getElementById("pso_global_best_solution_text").textContent = swarm.oldSolutions[i];
 			// document.getElementById("pso_x_value_text").textContent = swarm.bestPositions[i].x;
 			// document.getElementById("pso_y_value_text").textContent = swarm.bestPositions[i].y;
-			s += swarm.algorithmTextLogs[i] + "\n";
-			// document.getElementById("pso_swarm_text_log_textarea").textContent = s;
+			logs = swarm.logs[i] + "\n" + logs;
+			document.getElementById("logs-content")!.textContent = logs;
 			// document.getElementById("pso_current_epoch_number_text").textContent = i.toString();
 
 			// if (i === this.bestPositions.length - 1) document.getElementById("pso_global_best_solution_text").textContent = swarm.bestSolutions[i];
 		}
 
-		console.log(s);
+		running = false;
+		statusText.textContent = "Idle";
+		statusText.style.color = "orange";
+
+		console.log(swarm);
 
 		// document.getElementById("pso_current_best_solution_text").textContent = "";
 	});
