@@ -60,9 +60,15 @@ header, footer {
     transition: transform 0.2s, background-color 0.2s;
 }
 
+#export-csv:hover {
+    background-color: rgba(37, 99, 235, 0.68);
+    transform: scale(1.05);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
 input:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+    box-shadow: 0 0 5px rgba(37, 99, 235, 0.72);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
