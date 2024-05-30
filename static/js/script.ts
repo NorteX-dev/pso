@@ -29,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	let delay: number;
 	let precision: number;
 
+	let collectedData: Array<{ epoch: number; currentBest: number; globalBest: number; bestX: number; bestY: number }> = [];
+
 	document.getElementById("ackley")!.addEventListener("click", () => {
 		selectedFunction = "Ackleys";
 	});
@@ -134,6 +136,14 @@ Best position Y: ${bestY.toFixed(20)}`;
 				logs = swarm.logs[i] + "\n" + logs;
 				updateLogs(logs);
 
+				collectedData.push({
+					epoch: i + 1,
+					currentBest: swarm.oldSolutions[i],
+					globalBest: swarm.bestSolutions[i],
+					bestX: swarm.bestPositions[i].x,
+					bestY: swarm.bestPositions[i].y,
+				});
+
 				if (i === swarm.bestPositions.length - 1) {
 					updateStats(swarm.bestSolutions[i], swarm.bestSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
 				}
@@ -151,7 +161,6 @@ Best position Y: ${bestY.toFixed(20)}`;
 	});
 
 	function showAlert(message: string | null, type: string) {
-		// Remove existing alert if present
 		const existingAlert = document.querySelector('.alert-container');
 		if (existingAlert) existingAlert.remove();
 
@@ -170,4 +179,63 @@ Best position Y: ${bestY.toFixed(20)}`;
 			setTimeout(() => alertContainer.remove(), 500);
 		}, 3000);
 	}
+
+	function exportToCsv(data: any[], decimalPlaces: number) {
+		const csvRows = [];
+		const headers = Object.keys(data[0]);
+		csvRows.push(headers.join(','));
+
+		for (const row of data) {
+			if (row.globalBest === 0) {
+				continue;
+			}
+
+			const values = headers.map(header => {
+				let value = row[header];
+				if (header === 'globalBest' || header === 'currentBest' || header === 'bestX' || header === 'bestY') {
+					value = parseFloat(value).toFixed(decimalPlaces);
+				}
+				const escaped = (''+value).replace(/"/g, '\\"');
+				return `"${escaped}"`;
+			});
+			csvRows.push(values.join(','));
+		}
+
+		const csvString = csvRows.join('\n');
+		const blob = new Blob([csvString], { type: 'text/csv' });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement('a');
+		link.href = url;
+
+		const fileNameInput = document.getElementById('file-name') as HTMLInputElement;
+		const fileName = fileNameInput.value || 'data';
+		link.download = `${fileName}.csv`;
+
+		document.body.appendChild(link);
+		link.click();
+
+		document.body.removeChild(link);
+	}
+
+	document.getElementById("export-csv")!.addEventListener("click", () => {
+		if (!selectedFunction || collectedData.length === 0) {
+			showAlert("No data to export.", "error");
+			throw new Error("No data to export.");
+		}
+
+		if (running) {
+			showAlert("The algorithm is running. Please wait.", "error");
+			throw new Error("The algorithm is running. Please wait.");
+		}
+
+		try {
+			exportToCsv(collectedData, 20);
+			showAlert("Data exported successfully.", "success");
+		} catch (error) {
+			showAlert("An error occurred while exporting the data.", "error");
+		}
+
+		collectedData = [];
+	});
 });

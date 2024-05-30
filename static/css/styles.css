@@ -36,7 +36,6 @@ header, footer {
     background: #003b91;
     background: -webkit-linear-gradient(to left, #0d77fc, #003b91);
     background: linear-gradient(to left, #0d77fc, #003b91);
-
 }
 
 .function-button:hover {
@@ -104,8 +103,6 @@ input:focus {
 }
 
 .alert {
-    animation: shake 0.5s;
-    animation-iteration-count: 1;
     transition: opacity 0.5s ease-in-out;
     pointer-events: auto;
 }
@@ -114,6 +111,8 @@ input:focus {
     color: white;
 }
 .alert-error {
+    animation: shake 0.5s;
+    animation-iteration-count: 1;
     background-color: #f87171;
     color: white;
 }
