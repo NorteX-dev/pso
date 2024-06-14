@@ -38,7 +38,8 @@ export const exportToCsv = (data: any[], decimalPlaces: number) => {
 
 		const values = headers.map((header) => {
 			let value = row[header];
-			if (header === "globalBest" || header === "currentBest" || header === "bestX" || header === "bestY") {
+			const columnsToBeParsedAsFloats = ["globalBest", "currentBest", "bestX", "bestY"];
+			if (columnsToBeParsedAsFloats.includes(header)) {
 				value = parseFloat(value).toFixed(decimalPlaces);
 			}
 			const escaped = ("" + value).replace(/"/g, '\\"');
