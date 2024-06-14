@@ -4,6 +4,8 @@ export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 
 let MAGIC_SWITCH = true;
 
+type SwarmData = { epoch: number; currentBest: number; globalBest: number; bestX: number; bestY: number };
+
 document.addEventListener("DOMContentLoaded", () => {
 	const statusText = document.getElementById("status-text")!;
 	statusText.textContent = "Idle";
@@ -29,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	let delay: number;
 	let precision: number;
 
-	let collectedData: Array<{ epoch: number; currentBest: number; globalBest: number; bestX: number; bestY: number }> = [];
+	let collectedData: Array<SwarmData> = [];
 
 	document.getElementById("ackley")!.addEventListener("click", () => {
 		selectedFunction = "Ackleys";
@@ -47,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			throw new Error("Please select a function.");
 		}
 
-		if(running) {
+		if (running) {
 			showAlert("The algorithm is running. Please wait.", "error");
 			throw new Error("The algorithm is running. Please wait.");
 		}
@@ -161,13 +163,13 @@ Best position Y: ${bestY.toFixed(20)}`;
 	});
 
 	function showAlert(message: string | null, type: string) {
-		const existingAlert = document.querySelector('.alert-container');
+		const existingAlert = document.querySelector(".alert-container");
 		if (existingAlert) existingAlert.remove();
 
-		const alertContainer = document.createElement('div');
-		alertContainer.className = 'alert-container';
+		const alertContainer = document.createElement("div");
+		alertContainer.className = "alert-container";
 
-		const alertBox = document.createElement('div');
+		const alertBox = document.createElement("div");
 		alertBox.className = `alert alert-${type} p-4 rounded shadow-lg max-w-md`;
 		alertBox.textContent = message;
 
@@ -175,7 +177,7 @@ Best position Y: ${bestY.toFixed(20)}`;
 		document.body.appendChild(alertContainer);
 
 		setTimeout(() => {
-			alertBox.style.opacity = '0';
+			alertBox.style.opacity = "0";
 			setTimeout(() => alertContainer.remove(), 500);
 		}, 3000);
 	}
@@ -183,33 +185,33 @@ Best position Y: ${bestY.toFixed(20)}`;
 	function exportToCsv(data: any[], decimalPlaces: number) {
 		const csvRows = [];
 		const headers = Object.keys(data[0]);
-		csvRows.push(headers.join(','));
+		csvRows.push(headers.join(","));
 
 		for (const row of data) {
 			if (row.globalBest === 0) {
 				continue;
 			}
 
-			const values = headers.map(header => {
+			const values = headers.map((header) => {
 				let value = row[header];
-				if (header === 'globalBest' || header === 'currentBest' || header === 'bestX' || header === 'bestY') {
+				if (header === "globalBest" || header === "currentBest" || header === "bestX" || header === "bestY") {
 					value = parseFloat(value).toFixed(decimalPlaces);
 				}
-				const escaped = (''+value).replace(/"/g, '\\"');
+				const escaped = ("" + value).replace(/"/g, '\\"');
 				return `"${escaped}"`;
 			});
-			csvRows.push(values.join(','));
+			csvRows.push(values.join(","));
 		}
 
-		const csvString = csvRows.join('\n');
-		const blob = new Blob([csvString], { type: 'text/csv' });
+		const csvString = csvRows.join("\n");
+		const blob = new Blob([csvString], { type: "text/csv" });
 		const url = URL.createObjectURL(blob);
 
-		const link = document.createElement('a');
+		const link = document.createElement("a");
 		link.href = url;
 
-		const fileNameInput = document.getElementById('file-name') as HTMLInputElement;
-		const fileName = fileNameInput.value || 'data';
+		const fileNameInput = document.getElementById("file-name") as HTMLInputElement;
+		const fileName = fileNameInput.value || "data";
 		link.download = `${fileName}.csv`;
 
 		document.body.appendChild(link);
