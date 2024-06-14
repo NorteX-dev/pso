@@ -20,18 +20,29 @@ export class Swarm {
 	public bestSolutions: number[] = [];
 	public oldSolutions: number[] = [];
 
-	constructor(
-		functionType: FunctionType,
-		particles: number,
-		epochs: number,
-		inertia: number,
-		cognitive: number,
-		social: number,
-		beginRange: number,
-		endRange: number,
-		optimum: number,
-		filterPrecision: number,
-	) {
+	constructor({
+		functionType,
+		particles,
+		epochs,
+		inertia,
+		cognitive,
+		social,
+		beginRange,
+		endRange,
+		optimum,
+		filterPrecision,
+	}: {
+		functionType: FunctionType;
+		particles: number;
+		epochs: number;
+		inertia: number;
+		cognitive: number;
+		social: number;
+		beginRange: number;
+		endRange: number;
+		optimum: number;
+		filterPrecision: number;
+	}) {
 		if (beginRange >= endRange) {
 			throw new Error("Begin range must be less than end range.");
 		}

@@ -1,5 +1,6 @@
 import { Swarm } from "./swarm.js";
 import { exportToCsv, showAlert, wait } from "./util";
+import { mobileMenuInit } from "./mobile";
 
 export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 
@@ -55,17 +56,7 @@ const setStatusText = (type: "Idle" | "Running") => {
 	}
 };
 
-const mobileMenuInit = () => {
-	const toggleButton = document.querySelector<HTMLButtonElement>('[data-collapse-toggle="mobile-menu"]')!;
-	const menu = document.querySelector<HTMLDivElement>("#mobile-menu")!;
-
-	menu.style.display = "none";
-	toggleButton.addEventListener("click", () => {
-		menu.style.display = menu.style.display === "none" ? "block" : "none";
-	});
-};
-
-const addSetFunctionClickHandlers = () => {
+const addFunctionBtnsClickHandlers = () => {
 	const allFunctionButtons = document.querySelectorAll(".function-button");
 
 	allFunctionButtons.forEach((button) => {
@@ -80,6 +71,18 @@ const addSetFunctionClickHandlers = () => {
 	});
 };
 
+const updateSavedInfo = () => {
+	savedInfoContent.textContent = `Selected Function: ${selectedFunction}
+Inertia: ${inertia}
+Cognitive Component: ${cognitive}
+Social Component: ${social}
+Optimum Goal: ${optimum}
+Particles Amount: ${particles}
+Number of Epochs: ${epochs}
+Application Delay: ${delay}ms
+Filter Precision: ${precision}`;
+};
+
 const onSave = () => {
 	if (!selectedFunction) {
 		showAlert("Please select a function.", "error");
@@ -92,16 +95,7 @@ const onSave = () => {
 	}
 
 	assignGlobalVars();
-
-	savedInfoContent.textContent = `Selected Function: ${selectedFunction}
-Inertia: ${inertia}
-Cognitive Component: ${cognitive}
-Social Component: ${social}
-Optimum Goal: ${optimum}
-Particles Amount: ${particles}
-Number of Epochs: ${epochs}
-Application Delay: ${delay}ms
-Filter Precision: ${precision}`;
+	updateSavedInfo();
 
 	saved = true;
 };
@@ -131,18 +125,18 @@ const calculate = async () => {
 	running = true;
 	setStatusText("Running");
 
-	const swarm = new Swarm(
-		selectedFunction /*functionType*/,
-		particles /*particles*/,
-		epochs /*epochs*/,
-		inertia /*inertia*/,
-		cognitive /*cognitive*/,
-		social /*social*/,
-		0 /*beginRange*/,
-		10 /*endRange*/,
-		optimum /*optimum*/,
-		precision /*filterPrecision*/,
-	);
+	const swarm = new Swarm({
+		functionType: selectedFunction,
+		particles: particles,
+		epochs: epochs,
+		inertia: inertia,
+		cognitive: cognitive,
+		social: social,
+		beginRange: 0,
+		endRange: 10,
+		optimum: optimum,
+		filterPrecision: precision,
+	});
 	swarm.run();
 
 	for (let i = 0; i < swarm.bestSolutions.length; i++) {
@@ -196,7 +190,7 @@ const onExportCsv = () => {
 const run = () => {
 	mobileMenuInit();
 	setStatusText("Idle");
-	addSetFunctionClickHandlers();
+	addFunctionBtnsClickHandlers();
 	document.getElementById("save-info")!.addEventListener("click", onSave);
 	document.getElementById("calculate")!.addEventListener("click", calculate);
 	document.getElementById("export-csv")!.addEventListener("click", onExportCsv);
