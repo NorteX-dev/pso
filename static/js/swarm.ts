@@ -48,7 +48,7 @@ export class Swarm {
 		this.optimum = optimum;
 		this.filterPrecision = filterPrecision;
 
-		console.log("Created SwarmAlgorithm object:", this);
+		console.log("Created Swarm object:", this);
 	}
 
 	run() {
@@ -79,7 +79,7 @@ export class Swarm {
 
 			for (let p of particles) {
 				this.updateVelocity(p);
-				p.updatePosition();
+				p.adjustPosition();
 			}
 		}
 	}
@@ -95,22 +95,22 @@ export class Swarm {
 	}
 
 	updateGlobalBest(particle: Particle) {
-		if (particle.getBestSolution() < this.bestSolution && particle.getBestSolution() >= this.optimum) {
-			this.bestPosition = particle.getBestPosition();
-			this.bestSolution = particle.getBestSolution();
+		if (particle.bestSolution < this.bestSolution && particle.bestSolution >= this.optimum) {
+			this.bestPosition = particle.bestPosition;
+			this.bestSolution = particle.bestSolution;
 		}
 	}
 
 	updateVelocity(particle: Particle) {
-		let oldVelocity = particle.getVelocity();
-		let particleBestPosition = particle.getBestPosition();
-		let globalBestPosition = this.bestPosition.clone();
-		let position = particle.getPosition();
+		let oldVelocity = particle.velocity;
+		let particleBestPosition = particle.bestPosition;
+		let globalBestPosition = this.bestPosition;
+		let position = particle.position;
 
 		let r1 = Math.random();
 		let r2 = Math.random();
 
-		let newVelocity = oldVelocity.clone();
+		let newVelocity = oldVelocity;
 		newVelocity.multiplyCoordinates(this.inertia);
 
 		particleBestPosition.subtractCoordinates(position);
@@ -123,6 +123,6 @@ export class Swarm {
 		globalBestPosition.multiplyCoordinates(r2);
 		newVelocity.addCoordinates(globalBestPosition);
 
-		particle.setVelocity(newVelocity);
+		particle.velocity = newVelocity;
 	}
 }
