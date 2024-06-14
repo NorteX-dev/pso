@@ -15,8 +15,6 @@ export class Swarm {
 	public optimum: number;
 	public filterPrecision: number;
 
-	// ###
-
 	public bestPositions: Vector[] = [];
 	public bestSolutions: number[] = [];
 	public oldSolutions: number[] = [];
