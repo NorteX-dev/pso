@@ -170,7 +170,7 @@ const calculate = async () => {
 	running = false;
 	setStatusText("Idle");
 
-	if (1 /*magicswitch*/ && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === swarm.optimum) {
+	if (swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === swarm.optimum && 1 /*magicswitch*/) {
 		await calculate();
 	}
 };
