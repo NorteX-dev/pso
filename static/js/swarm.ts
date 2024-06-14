@@ -1,24 +1,24 @@
 import { Vector, Particle } from "./classes.js";
 import { FunctionType } from "./script.js";
+import { appendLog } from "./util";
 
 export class Swarm {
+	public functionType: "Ackleys" | "Booths" | "Three-Hump";
 	public numOfParticles: number;
 	public epochs: number;
 	public inertia: number;
+	public optimum: number;
 	public cognitiveComponent: number;
 	public socialComponent: number;
-	public functionType: "Ackleys" | "Booths" | "Three-Hump";
+	public filterPrecision: number;
 	public bestPosition: Vector;
 	public bestSolution: number;
 	public beginRange: number;
 	public endRange: number;
-	public optimum: number;
-	public filterPrecision: number;
 
 	public bestPositions: Vector[] = [];
 	public bestSolutions: number[] = [];
 	public oldSolutions: number[] = [];
-	public logs: string[] = [];
 
 	constructor(
 		functionType: FunctionType,
@@ -61,10 +61,10 @@ export class Swarm {
 			this.bestSolutions.push(this.bestSolution);
 
 			if (this.bestSolution < oldSolution) {
-				this.logs.push("Global best (Epoch " + (i + 1) + "): " + this.bestSolution.toFixed(20));
+				appendLog("Global best (Epoch " + (i + 1) + "): " + this.bestSolution.toFixed(20));
 				oldSolution = this.bestSolution;
 			} else {
-				this.logs.push("Global best (Epoch " + (i + 1) + "): " + this.bestSolution.toFixed(20));
+				appendLog("Global best (Epoch " + (i + 1) + "): " + this.bestSolution.toFixed(20));
 			}
 
 			if (this.bestSolution === this.optimum) {

@@ -1,69 +1,99 @@
 import { Swarm } from "./swarm.js";
+import { exportToCsv, showAlert, wait } from "./util";
 
 export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 
-let MAGIC_SWITCH = true;
-
+// TYPES
 type SwarmData = { epoch: number; currentBest: number; globalBest: number; bestX: number; bestY: number };
 
-document.addEventListener("DOMContentLoaded", () => {
-	const statusText = document.getElementById("status-text")!;
-	statusText.textContent = "Idle";
-	statusText.style.color = "orange";
+// GLOBAL HTML ELEMENTRS
+const savedInfoContent = document.querySelector<HTMLPreElement>("#saved-info-content")!; // "Saved Information" top-right container
+const statusText = document.querySelector<HTMLParagraphElement>("#status-text")!; // Text displaying "Idle" or "Running..."
 
-	const toggleButton = document.querySelector('[data-collapse-toggle="mobile-menu"]')!;
-	const menu: HTMLDivElement = document.querySelector("#mobile-menu")!;
+// GLOBAL STATE VARIABLES
+let running: boolean = false;
+let saved: boolean = false;
+let selectedFunction: FunctionType;
+let inertia: number;
+let cognitive: number;
+let social: number;
+let optimum: number;
+let particles: number;
+let epochs: number;
+let delay: number;
+let precision: number;
+
+let collectedData: Array<SwarmData> = [];
+
+const assignGlobalVars = () => {
+	const inertiaField = document.querySelector<HTMLInputElement>("#inertia")!;
+	const cognitiveField = document.querySelector<HTMLInputElement>("#cognitive")!;
+	const socialField = document.querySelector<HTMLInputElement>("#social")!;
+	const optimumField = document.querySelector<HTMLInputElement>("#optimum")!;
+	const particlesCountField = document.querySelector<HTMLInputElement>("#particles")!;
+	const epochsCountField = document.querySelector<HTMLInputElement>("#epochs")!;
+	const delayField = document.querySelector<HTMLInputElement>("#delay")!;
+	const filterPrecisionField = document.querySelector<HTMLInputElement>("#precision")!;
+
+	inertia = parseFloat(inertiaField.value);
+	cognitive = parseFloat(cognitiveField.value);
+	social = parseFloat(socialField.value);
+	optimum = parseFloat(optimumField.value);
+	particles = parseFloat(particlesCountField.value);
+	epochs = parseFloat(epochsCountField.value);
+	delay = parseFloat(delayField.value);
+	precision = parseFloat(filterPrecisionField.value);
+};
+
+const setStatusText = (type: "Idle" | "Running") => {
+	if (type === "Idle") {
+		statusText.textContent = "Idle";
+		statusText.style.color = "orange";
+	} else if (type === "Running") {
+		statusText.textContent = "Running...";
+		statusText.style.color = "green";
+	}
+};
+
+const mobileMenuInit = () => {
+	const toggleButton = document.querySelector<HTMLButtonElement>('[data-collapse-toggle="mobile-menu"]')!;
+	const menu = document.querySelector<HTMLDivElement>("#mobile-menu")!;
 
 	menu.style.display = "none";
 	toggleButton.addEventListener("click", () => {
 		menu.style.display = menu.style.display === "none" ? "block" : "none";
 	});
+};
 
-	let running: boolean = false;
-	let saved: boolean = false;
-	let selectedFunction: FunctionType;
-	let inertia: number;
-	let cognitive: number;
-	let social: number;
-	let optimum: number;
-	let particles: number;
-	let epochs: number;
-	let delay: number;
-	let precision: number;
+const addSetFunctionClickHandlers = () => {
+	const allFunctionButtons = document.querySelectorAll(".function-button");
 
-	let collectedData: Array<SwarmData> = [];
+	allFunctionButtons.forEach((button) => {
+		button.addEventListener("click", () => {
+			if (button.id === "ackley") selectedFunction = "Ackleys";
+			else if (button.id === "booth") selectedFunction = "Booths";
+			else if (button.id === "three-hump") selectedFunction = "Three-Hump";
 
-	document.getElementById("ackley")!.addEventListener("click", () => {
-		selectedFunction = "Ackleys";
+			allFunctionButtons.forEach((btn) => btn.classList.remove("selected-function"));
+			button.classList.add("selected-function");
+		});
 	});
-	document.getElementById("booth")!.addEventListener("click", () => {
-		selectedFunction = "Booths";
-	});
-	document.getElementById("three-hump")!.addEventListener("click", () => {
-		selectedFunction = "Three-Hump";
-	});
+};
 
-	document.getElementById("save-info")!.addEventListener("click", () => {
-		if (!selectedFunction) {
-			showAlert("Please select a function.", "error");
-			throw new Error("Please select a function.");
-		}
+const onSave = () => {
+	if (!selectedFunction) {
+		showAlert("Please select a function.", "error");
+		throw new Error("Please select a function.");
+	}
 
-		if (running) {
-			showAlert("The algorithm is running. Please wait.", "error");
-			throw new Error("The algorithm is running. Please wait.");
-		}
+	if (running) {
+		showAlert("The algorithm is running. Please wait.", "error");
+		throw new Error("The algorithm is running. Please wait.");
+	}
 
-		inertia = parseFloat((<HTMLInputElement>document.getElementById("inertia"))!.value);
-		cognitive = parseFloat((<HTMLInputElement>document.getElementById("cognitive"))!.value);
-		social = parseFloat((<HTMLInputElement>document.getElementById("social"))!.value);
-		optimum = parseFloat((<HTMLInputElement>document.getElementById("optimum"))!.value);
-		particles = parseFloat((<HTMLInputElement>document.getElementById("particles"))!.value);
-		epochs = parseFloat((<HTMLInputElement>document.getElementById("epochs"))!.value);
-		delay = parseFloat((<HTMLInputElement>document.getElementById("delay"))!.value);
-		precision = parseFloat((<HTMLInputElement>document.getElementById("precision"))!.value);
+	assignGlobalVars();
 
-		document.getElementById("saved-info-content")!.textContent = `Selected Function: ${selectedFunction}
+	savedInfoContent.textContent = `Selected Function: ${selectedFunction}
 Inertia: ${inertia}
 Cognitive Component: ${cognitive}
 Social Component: ${social}
@@ -73,171 +103,103 @@ Number of Epochs: ${epochs}
 Application Delay: ${delay}ms
 Filter Precision: ${precision}`;
 
-		saved = true;
-	});
+	saved = true;
+};
 
-	const functionButtons = document.querySelectorAll(".function-button");
-	functionButtons.forEach((button) => {
-		button.addEventListener("click", () => {
-			functionButtons.forEach((btn) => btn.classList.remove("selected-function"));
-			button.classList.add("selected-function");
-		});
-	});
+const updateStats = (currentBest: number, globalBest: number, bestX: number, bestY: number, epoch: number) => {
+	document.getElementById("result-content")!.textContent = globalBest.toFixed(20);
 
-	function updateStats(currentBest: number, globalBest: number, bestX: number, bestY: number, epoch: number) {
-		document.getElementById("result-content")!.textContent = globalBest.toFixed(20);
+	const statsPre = document.querySelector<HTMLPreElement>("#stats-content")!;
 
-		const statsPre: HTMLPreElement = document.getElementById("stats-content") as HTMLPreElement;
-
-		statsPre.textContent = `Current epoch: ${epoch}
+	statsPre.textContent = `Current epoch: ${epoch}
 Current best: ${currentBest.toFixed(20)}
 Best position X: ${bestX.toFixed(20)}
 Best position Y: ${bestY.toFixed(20)}`;
+};
+
+const calculate = async () => {
+	if (!saved) {
+		showAlert("Please save the information first.", "error");
+		throw new Error("Please save the information first.");
 	}
 
-	function updateLogs(logs: string) {
-		document.getElementById("logs-content")!.textContent = logs;
+	if (running) {
+		showAlert("The algorithm is running. Please wait.", "error");
+		throw new Error("The algorithm is running. Please wait.");
 	}
 
-	document.getElementById("calculate")!.addEventListener("click", async () => {
-		async function calculate() {
-			if (!saved) {
-				showAlert("Please save the information first.", "error");
-				throw new Error("Please save the information first.");
-			}
+	running = true;
+	setStatusText("Running");
 
-			if (running) {
-				showAlert("The algorithm is running. Please wait.", "error");
-				throw new Error("The algorithm is running. Please wait.");
-			}
+	const swarm = new Swarm(
+		selectedFunction /*functionType*/,
+		particles /*particles*/,
+		epochs /*epochs*/,
+		inertia /*inertia*/,
+		cognitive /*cognitive*/,
+		social /*social*/,
+		0 /*beginRange*/,
+		10 /*endRange*/,
+		optimum /*optimum*/,
+		precision /*filterPrecision*/,
+	);
+	swarm.run();
 
-			running = true;
-			statusText.textContent = "Running...";
-			statusText.style.color = "green";
+	for (let i = 0; i < swarm.bestSolutions.length; i++) {
+		await wait(delay);
 
-			const swarm = new Swarm(
-				selectedFunction /*functionType*/,
-				particles /*particles*/,
-				epochs /*epochs*/,
-				inertia /*inertia*/,
-				cognitive /*cognitive*/,
-				social /*social*/,
-				0 /*beginRange*/,
-				10 /*endRange*/,
-				optimum /*optimum*/,
-				precision /*filterPrecision*/,
-			);
-			swarm.run();
+		updateStats(swarm.bestSolutions[i], swarm.oldSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
 
-			let logs = "";
+		collectedData.push({
+			epoch: i + 1,
+			currentBest: swarm.oldSolutions[i],
+			globalBest: swarm.bestSolutions[i],
+			bestX: swarm.bestPositions[i].x,
+			bestY: swarm.bestPositions[i].y,
+		});
 
-			for (let i = 0; i < swarm.bestSolutions.length; i++) {
-				await new Promise((resolve) => setTimeout(resolve, delay));
-
-				updateStats(swarm.bestSolutions[i], swarm.oldSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
-				logs = swarm.logs[i] + "\n" + logs;
-				updateLogs(logs);
-
-				collectedData.push({
-					epoch: i + 1,
-					currentBest: swarm.oldSolutions[i],
-					globalBest: swarm.bestSolutions[i],
-					bestX: swarm.bestPositions[i].x,
-					bestY: swarm.bestPositions[i].y,
-				});
-
-				if (i === swarm.bestPositions.length - 1) {
-					updateStats(swarm.bestSolutions[i], swarm.bestSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
-				}
-			}
-
-			running = false;
-			statusText.textContent = "Idle";
-			statusText.style.color = "orange";
-
-			if (MAGIC_SWITCH && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === swarm.optimum) {
-				await calculate();
-			}
+		// if last in the array
+		if (i === swarm.bestPositions.length - 1) {
+			updateStats(swarm.bestSolutions[i], swarm.bestSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
 		}
+	}
+
+	running = false;
+	setStatusText("Idle");
+
+	if (1 /*magicswitch*/ && swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === swarm.optimum) {
 		await calculate();
-	});
+	}
+};
 
-	function showAlert(message: string | null, type: string) {
-		const existingAlert = document.querySelector(".alert-container");
-		if (existingAlert) existingAlert.remove();
-
-		const alertContainer = document.createElement("div");
-		alertContainer.className = "alert-container";
-
-		const alertBox = document.createElement("div");
-		alertBox.className = `alert alert-${type} p-4 rounded shadow-lg max-w-md`;
-		alertBox.textContent = message;
-
-		alertContainer.appendChild(alertBox);
-		document.body.appendChild(alertContainer);
-
-		setTimeout(() => {
-			alertBox.style.opacity = "0";
-			setTimeout(() => alertContainer.remove(), 500);
-		}, 3000);
+const onExportCsv = () => {
+	if (!selectedFunction || collectedData.length === 0) {
+		showAlert("No data to export.", "error");
+		throw new Error("No data to export.");
 	}
 
-	function exportToCsv(data: any[], decimalPlaces: number) {
-		const csvRows = [];
-		const headers = Object.keys(data[0]);
-		csvRows.push(headers.join(","));
-
-		for (const row of data) {
-			if (row.globalBest === 0) {
-				continue;
-			}
-
-			const values = headers.map((header) => {
-				let value = row[header];
-				if (header === "globalBest" || header === "currentBest" || header === "bestX" || header === "bestY") {
-					value = parseFloat(value).toFixed(decimalPlaces);
-				}
-				const escaped = ("" + value).replace(/"/g, '\\"');
-				return `"${escaped}"`;
-			});
-			csvRows.push(values.join(","));
-		}
-
-		const csvString = csvRows.join("\n");
-		const blob = new Blob([csvString], { type: "text/csv" });
-		const url = URL.createObjectURL(blob);
-
-		const link = document.createElement("a");
-		link.href = url;
-
-		const fileNameInput = document.getElementById("file-name") as HTMLInputElement;
-		const fileName = fileNameInput.value || "data";
-		link.download = `${fileName}.csv`;
-
-		document.body.appendChild(link);
-		link.click();
-
-		document.body.removeChild(link);
+	if (running) {
+		showAlert("The algorithm is running. Please wait.", "error");
+		throw new Error("The algorithm is running. Please wait.");
 	}
 
-	document.getElementById("export-csv")!.addEventListener("click", () => {
-		if (!selectedFunction || collectedData.length === 0) {
-			showAlert("No data to export.", "error");
-			throw new Error("No data to export.");
-		}
+	try {
+		exportToCsv(collectedData, 20);
+		showAlert("Data exported successfully.", "success");
+	} catch (error) {
+		showAlert("An error occurred while exporting the data.", "error");
+	}
 
-		if (running) {
-			showAlert("The algorithm is running. Please wait.", "error");
-			throw new Error("The algorithm is running. Please wait.");
-		}
+	collectedData = [];
+};
 
-		try {
-			exportToCsv(collectedData, 20);
-			showAlert("Data exported successfully.", "success");
-		} catch (error) {
-			showAlert("An error occurred while exporting the data.", "error");
-		}
+const run = () => {
+	mobileMenuInit();
+	setStatusText("Idle");
+	addSetFunctionClickHandlers();
+	document.getElementById("save-info")!.addEventListener("click", onSave);
+	document.getElementById("calculate")!.addEventListener("click", calculate);
+	document.getElementById("export-csv")!.addEventListener("click", onExportCsv);
+};
 
-		collectedData = [];
-	});
-});
+document.addEventListener("DOMContentLoaded", run);
