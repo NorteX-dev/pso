@@ -3,7 +3,7 @@ import { FunctionType } from "./script.js";
 import { appendLog } from "./util";
 
 export class Swarm {
-	public functionType: "Ackleys" | "Booths" | "Three-Hump";
+	public functionType: FunctionType;
 	public numOfParticles: number;
 	public epochs: number;
 	public inertia: number;
