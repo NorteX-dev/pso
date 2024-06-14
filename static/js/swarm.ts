@@ -63,7 +63,7 @@ export class Swarm {
 	}
 
 	run() {
-		let particles = this.initialize();
+		let particles = this.createParticles();
 		let oldSolution = this.bestSolution;
 
 		for (let i = 0; i < this.epochs; i++) {
@@ -95,7 +95,7 @@ export class Swarm {
 		}
 	}
 
-	initialize() {
+	createParticles() {
 		let particles = [];
 		for (let i = 0; i < this.numOfParticles; i++) {
 			let particle = new Particle(this.functionType, this.beginRange, this.endRange, this.optimum);

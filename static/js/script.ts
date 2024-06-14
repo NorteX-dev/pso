@@ -120,6 +120,7 @@ const onSave = () => {
 	saved = true;
 };
 
+// Handles the "Calculate" button click
 const onCalculate = async () => {
 	if (!saved) {
 		showAlert("Please save the information first.", "error");
@@ -175,6 +176,7 @@ const onCalculate = async () => {
 	}
 };
 
+// Handles the "Export to CSV" button click
 const onExportCsv = () => {
 	if (!selectedFunction || collectedData.length === 0) {
 		showAlert("No data to export.", "error");
