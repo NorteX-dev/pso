@@ -85,7 +85,7 @@ export class Particle {
 			return ackleyFunction(this.position.x, this.position.y, this.optimum);
 		} else if (this.functionType === "Booths") {
 			return boothFunction(this.position.x, this.position.y, this.optimum);
-		} else {
+		} else if (this.functionType === "Three-Hump") {
 			return threeHumpCamelFunction(this.position.x, this.position.y, this.optimum);
 		}
 	}
