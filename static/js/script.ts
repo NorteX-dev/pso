@@ -7,10 +7,6 @@ export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 // TYPES
 type SwarmData = { epoch: number; currentBest: number; globalBest: number; bestX: number; bestY: number };
 
-// GLOBAL HTML ELEMENTRS
-const savedInfoContent = document.querySelector<HTMLPreElement>("#saved-info-content")!; // "Saved Information" top-right container
-const statusText = document.querySelector<HTMLParagraphElement>("#status-text")!; // Text displaying "Idle" or "Running..."
-
 // GLOBAL STATE VARIABLES
 let running: boolean = false;
 let saved: boolean = false;
@@ -25,6 +21,10 @@ let delay: number;
 let precision: number;
 
 let collectedData: Array<SwarmData> = [];
+
+/*--------------------*/
+/*   HTML INTERFACES  */
+/*--------------------*/
 
 const assignGlobalVars = () => {
 	const inertiaField = document.querySelector<HTMLInputElement>("#inertia")!;
@@ -47,6 +47,8 @@ const assignGlobalVars = () => {
 };
 
 const setStatusText = (type: "Idle" | "Running") => {
+	const statusText = document.querySelector<HTMLParagraphElement>("#status-text")!; // Text displaying "Idle" or "Running..."
+
 	if (type === "Idle") {
 		statusText.textContent = "Idle";
 		statusText.style.color = "orange";
@@ -72,6 +74,8 @@ const addFunctionBtnsClickHandlers = () => {
 };
 
 const updateSavedInfo = () => {
+	const savedInfoContent = document.querySelector<HTMLPreElement>("#saved-info-content")!; // "Saved Information" top-right container
+
 	savedInfoContent.textContent = `Selected Function: ${selectedFunction}
 Inertia: ${inertia}
 Cognitive Component: ${cognitive}
@@ -83,6 +87,11 @@ Application Delay: ${delay}ms
 Filter Precision: ${precision}`;
 };
 
+/*--------------------*/
+/*      HANDLERS      */
+/*--------------------*/
+
+// Handles the "Save Information" button click
 const onSave = () => {
 	if (!selectedFunction) {
 		showAlert("Please select a function.", "error");
