@@ -1,6 +1,6 @@
 import { Swarm } from "./swarm.js";
-import { exportToCsv, showAlert, wait } from "./util";
-import { mobileMenuInit } from "./mobile";
+import { exportToCsv, showAlert, wait } from "./util.js";
+import { mobileMenuInit } from "./mobile.js";
 
 export type FunctionType = "Ackleys" | "Booths" | "Three-Hump";
 

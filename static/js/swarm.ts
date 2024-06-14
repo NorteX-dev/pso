@@ -1,6 +1,6 @@
 import { Vector, Particle } from "./classes.js";
 import { FunctionType } from "./script.js";
-import { appendLog } from "./util";
+import { appendLog } from "./util.js";
 
 export class Swarm {
 	public functionType: FunctionType;
@@ -72,14 +72,14 @@ export class Swarm {
 			this.bestSolutions.push(this.bestSolution);
 
 			if (this.bestSolution < oldSolution) {
-				appendLog("Global best (Epoch " + (i + 1) + "): " + this.bestSolution.toFixed(20));
+				appendLog(`Global best (Epoch ${i + 1}): ${this.bestSolution.toFixed(20)}`);
 				oldSolution = this.bestSolution;
 			} else {
-				appendLog("Global best (Epoch " + (i + 1) + "): " + this.bestSolution.toFixed(20));
+				appendLog(`Global best (Epoch ${i + 1}): ${this.bestSolution.toFixed(20)}`);
 			}
 
 			if (this.bestSolution === this.optimum) {
-				console.log("Reached optimum, finishing.");
+				appendLog("Reached optimum, finishing.");
 				break;
 			}
 
@@ -88,9 +88,12 @@ export class Swarm {
 				this.updateGlobalBest(p);
 			}
 
+			console.log("doing thing");
+
 			for (let p of particles) {
 				this.updateVelocity(p);
 				p.adjustPosition();
+				console.log(`Particle position (Epoch ${i + 1}): ${p.position.x.toFixed(20)}, ${p.position.y.toFixed(20)}`);
 			}
 		}
 	}

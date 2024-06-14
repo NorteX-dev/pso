@@ -1,5 +1,4 @@
 import { ackleyFunction, boothFunction, threeHumpCamelFunction } from "./functions.js";
-// Klasa wektora
 export class Vector {
     constructor(x = 0, y = 0, z = 0) {
         this.x = x;
@@ -11,54 +10,48 @@ export class Vector {
         this.y = y;
         this.z = z;
     }
-    addCoordinates(v) {
-        this.x += v.x;
-        this.y += v.y;
-        this.z += v.z;
+    addCoordinates(vec) {
+        this.x += vec.x;
+        this.y += vec.y;
+        this.z += vec.z;
         this.limit();
     }
-    subtractCoordinates(v) {
-        this.x -= v.x;
-        this.y -= v.y;
-        this.z -= v.z;
+    subtractCoordinates(vec) {
+        this.x -= vec.x;
+        this.y -= vec.y;
+        this.z -= vec.z;
         this.limit();
     }
-    multiplyCoordinates(s) {
-        this.x *= s;
-        this.y *= s;
-        this.z *= s;
+    multiplyCoordinates(mult) {
+        this.x *= mult;
+        this.y *= mult;
+        this.z *= mult;
         this.limit();
     }
-    mag() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
+    magnitude() {
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
     limit() {
-        const m = this.mag();
-        const limit = Number.MAX_VALUE;
-        if (m > limit) {
-            const ratio = m / limit;
-            this.x /= ratio;
-            this.y /= ratio;
+        const m = this.magnitude();
+        const lt = Number.MAX_VALUE;
+        if (m > lt) {
+            const r = m / lt;
+            this.x /= r;
+            this.y /= r;
         }
-    }
-    clone() {
-        return new Vector(this.x, this.y, this.z);
-    }
-    toString() {
-        return `(${this.x}, ${this.y}, ${this.z})`;
     }
 }
 export class Particle {
-    constructor(functionType, beginRange, endRange, optimum) {
-        if (beginRange >= endRange) {
+    constructor(functionType, start, end, optimum) {
+        if (start >= end) {
             throw new Error("Begin range must be less than end range.");
         }
         this.functionType = functionType;
         this.position = new Vector();
         this.velocity = new Vector();
         this.optimum = optimum;
-        this.setRandomPosition(beginRange, endRange);
-        this.bestPosition = this.velocity.clone();
+        this.setRandomPosition(start, end);
+        this.bestPosition = this.velocity;
         this.bestSolution = this.calculateSolution();
     }
     calculateSolution() {
@@ -72,42 +65,28 @@ export class Particle {
         else if (this.functionType === "Booths") {
             return boothFunction(this.position.x, this.position.y, this.optimum);
         }
-        else {
+        else if (this.functionType === "Three-Hump") {
             return threeHumpCamelFunction(this.position.x, this.position.y, this.optimum);
         }
+        return 0;
     }
-    setRandomPosition(beginRange, endRange) {
-        const x = this.rand(beginRange, endRange);
-        const y = this.rand(beginRange, endRange);
-        const z = this.rand(beginRange, endRange);
+    setRandomPosition(start, end) {
+        const x = this.pickRandom(start, end);
+        const y = this.pickRandom(start, end);
+        const z = this.pickRandom(start, end);
         this.position.setCoordinates(x, y, z);
     }
-    rand(beginRange, endRange) {
-        return Math.floor(Math.random() * (endRange - beginRange)) + beginRange;
+    pickRandom(start, end) {
+        return Math.floor(Math.random() * (end - start)) + start;
     }
     updatePersonalBest() {
         const solution = this.calculateSolution();
         if (solution < this.bestSolution) {
-            this.bestPosition = this.position.clone();
+            this.bestPosition = this.position;
             this.bestSolution = solution;
         }
     }
-    updatePosition() {
+    adjustPosition() {
         this.position.addCoordinates(this.velocity);
-    }
-    getPosition() {
-        return this.position.clone();
-    }
-    getVelocity() {
-        return this.velocity.clone();
-    }
-    getBestPosition() {
-        return this.bestPosition.clone();
-    }
-    getBestSolution() {
-        return this.bestSolution;
-    }
-    setVelocity(velocity) {
-        this.velocity = velocity.clone();
     }
 }
