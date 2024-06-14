@@ -88,6 +88,7 @@ export class Particle {
 		} else if (this.functionType === "Three-Hump") {
 			return threeHumpCamelFunction(this.position.x, this.position.y, this.optimum);
 		}
+		return 0;
 	}
 
 	setRandomPosition(start: number, end: number) {
