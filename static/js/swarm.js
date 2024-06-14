@@ -37,7 +37,7 @@ export class Swarm {
                 appendLog(`Global best (Epoch ${i + 1}): ${this.bestSolution.toFixed(20)}`);
             }
             if (this.bestSolution === this.optimum) {
-                appendLog("Reached optimum, finishing.");
+                console.log("Reached optimum, finishing.");
                 break;
             }
             for (let p of particles) {

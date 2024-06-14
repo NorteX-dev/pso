@@ -168,8 +168,6 @@ const onCalculate = async () => {
 		}
 	}
 
-	console.log(swarm.bestSolutions);
-
 	running = false;
 	setStatusText("Idle");
 

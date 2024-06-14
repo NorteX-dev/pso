@@ -79,7 +79,7 @@ export class Swarm {
 			}
 
 			if (this.bestSolution === this.optimum) {
-				appendLog("Reached optimum, finishing.");
+				console.log("Reached optimum, finishing.");
 				break;
 			}
 

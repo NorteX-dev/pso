@@ -147,7 +147,6 @@ const onCalculate = () => __awaiter(void 0, void 0, void 0, function* () {
             updateStats(swarm.bestSolutions[i], swarm.bestSolutions[i], swarm.bestPositions[i].x, swarm.bestPositions[i].y, i + 1);
         }
     }
-    console.log(swarm.bestSolutions);
     running = false;
     setStatusText("Idle");
     if (swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === swarm.optimum && 1 /*magicswitch*/) {
