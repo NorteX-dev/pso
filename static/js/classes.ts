@@ -55,7 +55,7 @@ export class Vector {
 }
 
 export class Particle {
-	public functionType: string;
+	public functionType: FunctionType;
 	public position: Vector;
 	public velocity: Vector;
 	public bestPosition: Vector;
