@@ -87,6 +87,17 @@ Application Delay: ${delay}ms
 Filter Precision: ${precision}`;
 };
 
+const updateStats = (currentBest: number, globalBest: number, bestX: number, bestY: number, epoch: number) => {
+	document.getElementById("result-content")!.textContent = globalBest.toFixed(20);
+
+	const statsPre = document.querySelector<HTMLPreElement>("#stats-content")!;
+
+	statsPre.textContent = `Current epoch: ${epoch}
+Current best: ${currentBest.toFixed(20)}
+Best position X: ${bestX.toFixed(20)}
+Best position Y: ${bestY.toFixed(20)}`;
+};
+
 /*--------------------*/
 /*      HANDLERS      */
 /*--------------------*/
@@ -109,18 +120,7 @@ const onSave = () => {
 	saved = true;
 };
 
-const updateStats = (currentBest: number, globalBest: number, bestX: number, bestY: number, epoch: number) => {
-	document.getElementById("result-content")!.textContent = globalBest.toFixed(20);
-
-	const statsPre = document.querySelector<HTMLPreElement>("#stats-content")!;
-
-	statsPre.textContent = `Current epoch: ${epoch}
-Current best: ${currentBest.toFixed(20)}
-Best position X: ${bestX.toFixed(20)}
-Best position Y: ${bestY.toFixed(20)}`;
-};
-
-const calculate = async () => {
+const onCalculate = async () => {
 	if (!saved) {
 		showAlert("Please save the information first.", "error");
 		throw new Error("Please save the information first.");
@@ -171,7 +171,7 @@ const calculate = async () => {
 	setStatusText("Idle");
 
 	if (swarm.bestSolutions.length === 1 && swarm.bestSolutions[0] === swarm.optimum && 1 /*magicswitch*/) {
-		await calculate();
+		await onCalculate();
 	}
 };
 
@@ -201,7 +201,7 @@ const run = () => {
 	setStatusText("Idle");
 	addFunctionBtnsClickHandlers();
 	document.getElementById("save-info")!.addEventListener("click", onSave);
-	document.getElementById("calculate")!.addEventListener("click", calculate);
+	document.getElementById("calculate")!.addEventListener("click", onCalculate);
 	document.getElementById("export-csv")!.addEventListener("click", onExportCsv);
 };
 
