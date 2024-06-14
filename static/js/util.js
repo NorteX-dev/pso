@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 export const appendLog = (log) => {
-    document.getElementById("logs-content").textContent += log;
+    document.getElementById("logs-content").textContent += log + "\n";
 };
 export function wait(ms) {
     return __awaiter(this, void 0, void 0, function* () {

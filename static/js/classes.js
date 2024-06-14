@@ -40,6 +40,9 @@ export class Vector {
             this.y /= r;
         }
     }
+    clone() {
+        return new Vector(this.x, this.y, this.z);
+    }
 }
 export class Particle {
     constructor(functionType, start, end, optimum) {
@@ -88,5 +91,20 @@ export class Particle {
     }
     adjustPosition() {
         this.position.addCoordinates(this.velocity);
+    }
+    getPosition() {
+        return this.position.clone();
+    }
+    getVelocity() {
+        return this.velocity.clone();
+    }
+    getBestPosition() {
+        return this.bestPosition.clone();
+    }
+    getBestSolution() {
+        return this.bestSolution;
+    }
+    setVelocity(velocity) {
+        this.velocity = velocity.clone();
     }
 }

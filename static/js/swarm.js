@@ -44,7 +44,6 @@ export class Swarm {
                 p.updatePersonalBest();
                 this.updateGlobalBest(p);
             }
-            console.log("doing thing");
             for (let p of particles) {
                 this.updateVelocity(p);
                 p.adjustPosition();
@@ -62,19 +61,19 @@ export class Swarm {
         return particles;
     }
     updateGlobalBest(particle) {
-        if (particle.bestSolution < this.bestSolution && particle.bestSolution >= this.optimum) {
-            this.bestPosition = particle.bestPosition;
-            this.bestSolution = particle.bestSolution;
+        if (particle.getBestSolution() < this.bestSolution && particle.getBestSolution() >= this.optimum) {
+            this.bestPosition = particle.getBestPosition();
+            this.bestSolution = particle.getBestSolution();
         }
     }
     updateVelocity(particle) {
-        let oldVelocity = particle.velocity;
-        let particleBestPosition = particle.bestPosition;
-        let globalBestPosition = this.bestPosition;
-        let position = particle.position;
+        let oldVelocity = particle.getVelocity();
+        let particleBestPosition = particle.getBestPosition();
+        let globalBestPosition = this.bestPosition.clone();
+        let position = particle.getPosition();
         let r1 = Math.random();
         let r2 = Math.random();
-        let newVelocity = oldVelocity;
+        let newVelocity = oldVelocity.clone();
         newVelocity.multiplyCoordinates(this.inertia);
         particleBestPosition.subtractCoordinates(position);
         particleBestPosition.multiplyCoordinates(this.cognitiveComponent);
@@ -84,6 +83,6 @@ export class Swarm {
         globalBestPosition.multiplyCoordinates(this.socialComponent);
         globalBestPosition.multiplyCoordinates(r2);
         newVelocity.addCoordinates(globalBestPosition);
-        particle.velocity = newVelocity;
+        particle.setVelocity(newVelocity);
     }
 }

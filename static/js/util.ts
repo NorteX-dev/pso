@@ -1,5 +1,5 @@
 export const appendLog = (log: string) => {
-	document.getElementById("logs-content")!.textContent += log;
+	document.getElementById("logs-content")!.textContent += log + "\n";
 };
 
 export async function wait(ms: number) {
