@@ -18,24 +18,24 @@ export class Vector {
 		this.z = z;
 	}
 
-	addCoordinates(v: Vector) {
-		this.x += v.x;
-		this.y += v.y;
-		this.z += v.z;
+	addCoordinates(vec: Vector) {
+		this.x += vec.x;
+		this.y += vec.y;
+		this.z += vec.z;
 		this.limit();
 	}
 
-	subtractCoordinates(v: Vector) {
-		this.x -= v.x;
-		this.y -= v.y;
-		this.z -= v.z;
+	subtractCoordinates(vec: Vector) {
+		this.x -= vec.x;
+		this.y -= vec.y;
+		this.z -= vec.z;
 		this.limit();
 	}
 
-	multiplyCoordinates(s: number) {
-		this.x *= s;
-		this.y *= s;
-		this.z *= s;
+	multiplyCoordinates(mult: number) {
+		this.x *= mult;
+		this.y *= mult;
+		this.z *= mult;
 		this.limit();
 	}
 
