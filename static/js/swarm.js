@@ -47,7 +47,7 @@ export class Swarm {
             for (let p of particles) {
                 this.updateVelocity(p);
                 p.adjustPosition();
-                console.log(`Particle position (Epoch ${i + 1}): ${p.position.x.toFixed(20)}, ${p.position.y.toFixed(20)}`);
+                console.log(`Particle best solution (Epoch ${i + 1}): `, p.bestSolution);
             }
         }
     }
